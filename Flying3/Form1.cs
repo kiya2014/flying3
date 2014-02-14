@@ -24,10 +24,7 @@ namespace Flying3
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            isStop = false;
-            button1.Enabled = false;
-            button3.Enabled = false;
-            button5.Enabled = false;
+            setButtonStart();
 
             int itemId = 1;
             if (radioButton2.Checked)
@@ -133,9 +130,7 @@ namespace Flying3
                 await Task.Delay(300);
             }
 
-            button1.Enabled = true;
-            button3.Enabled = true;
-            button5.Enabled = true;
+            setButtonEnd();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -145,10 +140,7 @@ namespace Flying3
 
         private async void button3_Click(object sender, EventArgs e)
         {
-            isStop = false;
-            button1.Enabled = false;
-            button3.Enabled = false;
-            button5.Enabled = false;
+            setButtonStart();
 
             string sessionId = textBox3.Text;
             string nGacha = "http://www.prpr.dmmgames.com/Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=free";
@@ -208,17 +200,12 @@ namespace Flying3
 
             }
 
-            button1.Enabled = true;
-            button3.Enabled = true;
-            button5.Enabled = true;
+            setButtonEnd();
         }
 
         private async void button5_Click(object sender, EventArgs e)
         {
-            isStop = false;
-            button1.Enabled = false;
-            button3.Enabled = false;
-            button5.Enabled = false;
+            setButtonStart();
 
             int itemId = 1;
             if (radioButton2.Checked)
@@ -291,14 +278,106 @@ namespace Flying3
                 await Task.Delay(300);
             }
 
-            button1.Enabled = true;
-            button3.Enabled = true;
-            button5.Enabled = true;
+            setButtonEnd();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
 
         }
+
+        private async void button6_Click(object sender, EventArgs e)
+        {
+            setButtonStart();
+
+            string sessionId = textBox3.Text;
+            string opponentPlayerId = "";
+            string list = "http://www.prpr.dmmgames.com/Pvp_Top/list?sessionId=" + sessionId + "&typeId=3&rank=1&format=json";
+            string set = "http://www.prpr.dmmgames.com/Pvp_Battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
+            string battle = "http://www.prpr.dmmgames.com/Pvp_Battle/battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
+            string uri = list;
+
+            while (!isStop)
+            {
+                WebRequest req = WebRequest.Create(uri);
+                WebResponse res = req.GetResponse();
+                Stream st = res.GetResponseStream();
+                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
+                var json = DynamicJson.Parse(sr.ReadToEnd());
+                if (!json.IsDefined("contents"))
+                {
+                    textBox1.Text = "UNKNOWN ERROR";
+                    sr.Close();
+                    st.Close();
+                    break;
+                }
+                var contents = json.contents;
+                textBox1.Text = contents + "\r\n";
+
+                if (!contents.IsDefined("player"))
+                {
+                    if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
+                    {
+                        textBox1.Text = json.header.error_msg;
+                    }
+                    else
+                    {
+                        textBox1.Text = "UNKNOWN ERROR";
+                    }
+                    sr.Close();
+                    st.Close();
+                    break;
+                }
+                else
+                {
+                    if (contents.IsDefined("searchList"))
+                    {
+                        dynamic[] searchList = (dynamic[])contents.searchList;
+                        if (searchList.Length > 0)
+                        {
+                            opponentPlayerId = searchList[0].playerId;
+                            uri = set + opponentPlayerId;
+                        }
+                    }
+                    else if (contents.IsDefined("result"))
+                    {
+                        uri = list;
+                    }
+                    else if (contents.IsDefined("playerHelp"))
+                    {
+                        string id = contents.playerHelp.info.type.id;
+                        if (int.Parse(id) == 3)
+                        {
+                            uri = battle + opponentPlayerId;
+                        }
+                    }
+                }
+
+                sr.Close();
+                st.Close();
+                await Task.Delay(5000);
+            }
+
+            setButtonEnd();
+        }
+
+        private void setButtonStart()
+        {
+            isStop = false;
+            button1.Enabled = false;
+            button3.Enabled = false;
+            button5.Enabled = false;
+            button6.Enabled = false;
+        }
+
+        private void setButtonEnd()
+        {
+            button1.Enabled = true;
+            button3.Enabled = true;
+            button5.Enabled = true;
+            button6.Enabled = true;
+        }
+
     }
+
 }
