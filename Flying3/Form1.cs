@@ -142,9 +142,19 @@ namespace Flying3
         {
             setButtonStart();
 
+            string divide = "free";
+            if (radioButton4.Checked)
+            {
+                divide = "rare";
+            }
+            else if (radioButton5.Checked)
+            {
+                divide = "pvpBox";
+            }
+
             string sessionId = textBox3.Text;
-            string nGacha = "http://www.prpr.dmmgames.com/Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=free";
-            string nGachaChoice = "http://www.prpr.dmmgames.com/Gacha/choice?sessionId=" + sessionId + "&divide=free&format=json&token=tokendummy&select=1";
+            string nGacha = "http://www.prpr.dmmgames.com/Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=" + divide;
+            string nGachaChoice = "http://www.prpr.dmmgames.com/Gacha/choice?sessionId=" + sessionId + "&divide=" + divide + "&format=json&token=tokendummy&select=1";
 
             while (!isStop)
             {
@@ -349,6 +359,7 @@ namespace Flying3
                         if (int.Parse(id) == 3)
                         {
                             uri = battle + opponentPlayerId;
+                            textBox6.Text = contents.consecutiveWins;
                         }
                     }
                 }
