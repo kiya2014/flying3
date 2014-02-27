@@ -82,7 +82,8 @@ namespace Flying3
                 }
                 if (!contents.IsDefined("player"))
                 {
-                    if (json.IsDefined("header") && json.header.IsDefined("error_msg") && json.header.error_msg == "action_point")
+                    if (json.IsDefined("header") && json.header.IsDefined("error_msg") &&
+                        (json.header.error_msg == "action_point" || json.header.error_msg == "Not Action Point"))
                     {
                         uri = recover;
                     }
@@ -252,7 +253,8 @@ namespace Flying3
                 }
                 if (!contents.IsDefined("player"))
                 {
-                    if (json.IsDefined("header") && json.header.IsDefined("error_msg") && json.header.error_msg == "action_point")
+                    if (json.IsDefined("header") && json.header.IsDefined("error_msg") &&
+                        (json.header.error_msg == "action_point" || json.header.error_msg == "Not Action Point"))
                     {
                         uri = recover;
                     }
@@ -407,7 +409,8 @@ namespace Flying3
 
                 if (!contents.IsDefined("player"))
                 {
-                    if (json.IsDefined("header") && json.header.IsDefined("error_msg") && json.header.error_msg == "action_point")
+                    if (json.IsDefined("header") && json.header.IsDefined("error_msg") &&
+                        (json.header.error_msg == "action_point" || json.header.error_msg == "Not Action Point"))
                     {
                         uri = recover;
                     }
