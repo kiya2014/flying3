@@ -372,6 +372,92 @@ namespace Flying3
             setButtonEnd();
         }
 
+        private async void button7_Click(object sender, EventArgs e)
+        {
+            setButtonStart();
+
+            int itemId = 1;
+            if (radioButton2.Checked)
+            {
+                itemId = 2;
+            }
+
+            string sessionId = textBox3.Text;
+            string next = "http://www.prpr.dmmgames.com/Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
+            string battle = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss_battle_id=";
+            string recover = "http://www.prpr.dmmgames.com/Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
+            string uri = next;
+
+            while (!isStop)
+            {
+                WebRequest req = WebRequest.Create(uri);
+                WebResponse res = req.GetResponse();
+                Stream st = res.GetResponseStream();
+                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
+                var json = DynamicJson.Parse(sr.ReadToEnd());
+                if (!json.IsDefined("contents"))
+                {
+                    textBox1.Text = "UNKNOWN ERROR";
+                    sr.Close();
+                    st.Close();
+                    break;
+                }
+                var contents = json.contents;
+                textBox1.Text = contents + "\r\n";
+
+                if (!contents.IsDefined("player"))
+                {
+                    if (json.IsDefined("header") && json.header.IsDefined("error_msg") && json.header.error_msg == "action_point")
+                    {
+                        uri = recover;
+                    }
+                    else
+                    {
+                        if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
+                        {
+                            textBox1.Text = json.header.error_msg;
+                        }
+                        else
+                        {
+                            textBox1.Text = "UNKNOWN ERROR";
+                        }
+                        sr.Close();
+                        st.Close();
+                        break;
+                    }
+                }
+                else
+                {
+                    if (contents.IsDefined("raidboss_battle_id"))
+                    {
+                        uri = battle + contents.raidboss_battle_id;
+                    }
+                    else if (contents.IsDefined("raidbossStatus"))
+                    {
+                        int killFlag = (int)contents.boss.killFlag;
+                        if (killFlag == 1)
+                        {
+                            uri = next;
+                        }
+                    }
+                    else if (int.Parse(contents.player.actionPoint.value) >= 3)
+                    {
+                        uri = next;
+                    }
+                    else
+                    {
+                        uri = recover;
+                    }
+                }
+
+                sr.Close();
+                st.Close();
+                await Task.Delay(5000);
+            }
+
+            setButtonEnd();
+        }
+
         private void setButtonStart()
         {
             isStop = false;
@@ -379,6 +465,7 @@ namespace Flying3
             button3.Enabled = false;
             button5.Enabled = false;
             button6.Enabled = false;
+            button7.Enabled = false;
         }
 
         private void setButtonEnd()
@@ -387,6 +474,7 @@ namespace Flying3
             button3.Enabled = true;
             button5.Enabled = true;
             button6.Enabled = true;
+            button7.Enabled = true;
         }
 
     }
