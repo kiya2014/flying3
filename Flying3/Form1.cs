@@ -16,6 +16,7 @@ namespace Flying3
     public partial class Form1 : Form
     {
         Boolean isStop = false;
+        string ctx = "http://www.prpr.dmmgames.com/";
 
         public Form1()
         {
@@ -33,15 +34,15 @@ namespace Flying3
             }
 
             string sessionId = textBox3.Text;
-            string next = "http://www.prpr.dmmgames.com/Operations_Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
+            string next = ctx + "Operations_Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
             if (checkBox1.Checked)
             {
                 next += "&radar=1";
             }
-            string clearChoice = "http://www.prpr.dmmgames.com/Operations_Clearchancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
-            string pointChoice = "http://www.prpr.dmmgames.com/Operations_Pointchancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
-            string battle = "http://www.prpr.dmmgames.com/Operations_Quest/zako?sessionId=" + sessionId + "&format=json";
-            string recover = "http://www.prpr.dmmgames.com/Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
+            string clearChoice = ctx + "Operations_Clearchancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
+            string pointChoice = ctx + "Operations_Pointchancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
+            string battle = ctx + "Operations_Quest/zako?sessionId=" + sessionId + "&format=json";
+            string recover = ctx + "Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
             string uri = next;
 
             while (!isStop)
@@ -154,8 +155,8 @@ namespace Flying3
             }
 
             string sessionId = textBox3.Text;
-            string nGacha = "http://www.prpr.dmmgames.com/Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=" + divide;
-            string nGachaChoice = "http://www.prpr.dmmgames.com/Gacha/choice?sessionId=" + sessionId + "&divide=" + divide + "&format=json&token=tokendummy&select=1";
+            string nGacha = ctx + "Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=" + divide;
+            string nGachaChoice = ctx + "Gacha/choice?sessionId=" + sessionId + "&divide=" + divide + "&format=json&token=tokendummy&select=1";
 
             while (!isStop)
             {
@@ -225,9 +226,9 @@ namespace Flying3
             }
 
             string sessionId = textBox3.Text;
-            string next = "http://www.prpr.dmmgames.com/Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0&id=0";
-            string choice = "http://www.prpr.dmmgames.com/Chancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
-            string recover = "http://www.prpr.dmmgames.com/Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
+            string next = ctx + "Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0&id=0";
+            string choice = ctx + "Chancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
+            string recover = ctx + "Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
             string uri = next;
 
             while (!isStop)
@@ -304,9 +305,9 @@ namespace Flying3
 
             string sessionId = textBox3.Text;
             string opponentPlayerId = "";
-            string list = "http://www.prpr.dmmgames.com/Pvp_Top/list?sessionId=" + sessionId + "&typeId=3&rank=1&format=json";
-            string set = "http://www.prpr.dmmgames.com/Pvp_Battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
-            string battle = "http://www.prpr.dmmgames.com/Pvp_Battle/battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
+            string list = ctx + "Pvp_Top/list?sessionId=" + sessionId + "&typeId=3&rank=1&format=json";
+            string set = ctx + "Pvp_Battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
+            string battle = ctx + "Pvp_Battle/battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
             string uri = list;
 
             while (!isStop)
@@ -387,13 +388,13 @@ namespace Flying3
             string sessionId = textBox3.Text;
             string raidboss_battle_id = "";
             int attack_count = 0;
-            string next = "http://www.prpr.dmmgames.com/Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
-            string battle = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss%5Fbattle%5Fid=";
-            string escape = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/escape?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
-            string debilitate = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/debilitate?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
-            string help = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/help?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
-            string invite = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/invite-request?sessionId=" + sessionId + "&format=json&helpMessageId=1";
-            string recover = "http://www.prpr.dmmgames.com/Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
+            string next = ctx + "Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
+            string battle = ctx + "Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss%5Fbattle%5Fid=";
+            string escape = ctx + "Raidboss_Raidboss/escape?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
+            string debilitate = ctx + "Raidboss_Raidboss/debilitate?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
+            string help = ctx + "Raidboss_Raidboss/help?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
+            string invite = ctx + "Raidboss_Raidboss/invite-request?sessionId=" + sessionId + "&format=json&helpMessageId=1";
+            string recover = ctx + "Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
             string uri = next;
 
             while (!isStop)
@@ -457,7 +458,14 @@ namespace Flying3
                         }
                         else
                         {
-                            uri = debilitate + raidboss_battle_id;
+                            if (level < 10)
+                            {
+                                uri = battle + raidboss_battle_id;
+                            }
+                            else
+                            {
+                                uri = debilitate + raidboss_battle_id;
+                            }
                         }
                     }
                     else if (contents.IsDefined("raidbossStatus"))
