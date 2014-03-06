@@ -385,8 +385,14 @@ namespace Flying3
             }
 
             string sessionId = textBox3.Text;
+            string raidboss_battle_id = "";
+            int attack_count = 0;
             string next = "http://www.prpr.dmmgames.com/Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
-            string battle = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss_battle_id=";
+            string battle = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss%5Fbattle%5Fid=";
+            string escape = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/escape?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
+            string debilitate = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/debilitate?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
+            string help = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/help?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
+            string invite = "http://www.prpr.dmmgames.com/Raidboss_Raidboss/invite-request?sessionId=" + sessionId + "&format=json&helpMessageId=1";
             string recover = "http://www.prpr.dmmgames.com/Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
             string uri = next;
 
@@ -433,15 +439,95 @@ namespace Flying3
                 {
                     if (contents.IsDefined("raidboss_battle_id"))
                     {
-                        uri = battle + contents.raidboss_battle_id;
+                        raidboss_battle_id = contents.raidboss_battle_id;
+                        attack_count = 0;
+                        int type = (int)contents.boss.type;
+                        int level = 0;
+                        if (contents.boss.level is string)
+                        {
+                            level = int.Parse(contents.boss.level);
+                        }
+                        else
+                        {
+                            level = (int)contents.boss.level;
+                        }
+                        if (type == 0 || level > 50)
+                        {
+                            uri = escape + raidboss_battle_id;
+                        }
+                        else
+                        {
+                            uri = debilitate + raidboss_battle_id;
+                        }
                     }
                     else if (contents.IsDefined("raidbossStatus"))
                     {
-                        int killFlag = (int)contents.boss.killFlag;
-                        if (killFlag == 1)
+                        int status = (int)contents.raidbossStatus.status;
+                        if (status > 1)
                         {
+                            raidboss_battle_id = "";
                             uri = next;
                         }
+                        else
+                        {
+                            if (contents.IsDefined("boss"))
+                            {
+                                if (contents.boss.IsDefined("killFlag"))
+                                {
+                                    if (contents.boss.bossMasterId != null)
+                                    {
+                                        attack_count++;
+                                        if (attack_count == 1)
+                                        {
+                                            uri = help + raidboss_battle_id;
+                                        }
+                                    }
+                                    int killFlag = (int)contents.boss.killFlag;
+                                    if (killFlag == 1)
+                                    {
+                                        raidboss_battle_id = "";
+                                        uri = next;
+                                    }
+                                }
+                                else
+                                {
+                                    uri = battle + raidboss_battle_id;
+                                }
+                            }
+                            else
+                            {
+                                raidboss_battle_id = "";
+                                uri = next;
+                            }
+                        }
+                    }
+                    else if (contents.IsDefined("helpList"))
+                    {
+                        uri = invite;
+                        dynamic[] helpList = (dynamic[])contents.helpList;
+                        int i = 0;
+                        Array.Sort(helpList, (a, b) => (int)a.player.login - (int)b.player.login);
+                        foreach (dynamic helpFriend in helpList)
+                        {
+                            if (i < 20)
+                            {
+                                uri = uri + "&friends%5B%5D=" + helpFriend.player.id;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                            i++;
+                        }
+                        uri = uri + "&raidboss%5Fbattle%5Fid=" + raidboss_battle_id;
+                    }
+                    else if (contents.IsDefined("friends"))
+                    {
+                        uri = battle + raidboss_battle_id;
+                    }
+                    else if (raidboss_battle_id != "")
+                    {
+                        uri = battle + raidboss_battle_id;
                     }
                     else if (int.Parse(contents.player.actionPoint.value) >= 3)
                     {
@@ -455,7 +541,7 @@ namespace Flying3
 
                 sr.Close();
                 st.Close();
-                await Task.Delay(5000);
+                await Task.Delay(2000);
             }
 
             setButtonEnd();
