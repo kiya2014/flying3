@@ -386,6 +386,15 @@ namespace Flying3
             }
 
             string sessionId = textBox3.Text;
+            int biyakuLevel = 15;
+            if (textBox7.Text != "")
+            {
+                int i = 0;
+                if (int.TryParse(textBox7.Text, out i))
+                {
+                    biyakuLevel = i;
+                }
+            }
             string raidboss_battle_id = "";
             int attack_count = 0;
             string next = ctx + "Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
@@ -458,7 +467,7 @@ namespace Flying3
                         }
                         else
                         {
-                            if (level < 10)
+                            if (level < biyakuLevel)
                             {
                                 uri = battle + raidboss_battle_id;
                             }
@@ -475,6 +484,14 @@ namespace Flying3
                         {
                             raidboss_battle_id = "";
                             uri = next;
+                            if (contents.raidbossStatus.IsDefined("waitCalculation"))
+                            {
+                                int wait = (int)contents.raidbossStatus.waitCalculation;
+                                if (wait > 0)
+                                {
+                                    await Task.Delay(30000);
+                                }
+                            }
                         }
                         else
                         {
