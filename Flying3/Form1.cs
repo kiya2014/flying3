@@ -313,7 +313,16 @@ namespace Flying3
             while (!isStop)
             {
                 WebRequest req = WebRequest.Create(uri);
-                WebResponse res = req.GetResponse();
+                WebResponse res = null;
+                try
+                {
+                    res = req.GetResponse();
+                }
+                catch (WebException ex)
+                {
+                    textBox1.Text = ex.Message;
+                    continue;
+                }
                 Stream st = res.GetResponseStream();
                 StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
                 var json = DynamicJson.Parse(sr.ReadToEnd());
@@ -362,7 +371,10 @@ namespace Flying3
                         if (int.Parse(id) == 3)
                         {
                             uri = battle + opponentPlayerId;
-                            textBox6.Text = contents.consecutiveWins;
+                            if (contents.consecutiveWins is string)
+                            {
+                                textBox6.Text = contents.consecutiveWins;
+                            }
                         }
                     }
                 }
@@ -461,13 +473,13 @@ namespace Flying3
                         {
                             level = (int)contents.boss.level;
                         }
-                        if (type == 0 || level > 50)
+                        if (type == 1 && level > 50)
                         {
                             uri = escape + raidboss_battle_id;
                         }
                         else
                         {
-                            if (level < biyakuLevel)
+                            if ((type == 0 && level < 400) || level < biyakuLevel)
                             {
                                 uri = battle + raidboss_battle_id;
                             }
