@@ -305,7 +305,16 @@ namespace Flying3
 
             string sessionId = textBox3.Text;
             string opponentPlayerId = "";
-            string list = ctx + "Pvp_Top/list?sessionId=" + sessionId + "&typeId=3&rank=1&format=json";
+            int rank = 5;
+            if (textBox8.Text != "")
+            {
+                int i = 0;
+                if (int.TryParse(textBox8.Text, out i))
+                {
+                    rank = i;
+                }
+            }
+            string list = ctx + "Pvp_Top/list?sessionId=" + sessionId + "&typeId=3&rank=" + rank + "&format=json";
             string set = ctx + "Pvp_Battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
             string battle = ctx + "Pvp_Battle/battle?sessionId=" + sessionId + "&format=json&opponentPlayerId=";
             string uri = list;
