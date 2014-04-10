@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Codeplex.Data;
+using Hal.CookieGetterSharp;
 
 namespace Flying3
 {
@@ -23,19 +24,19 @@ namespace Flying3
             InitializeComponent();
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private async void buttonDaisakusen_Click(object sender, EventArgs e)
         {
             setButtonStart();
 
             int itemId = 1;
-            if (radioButton2.Checked)
+            if (radioButtonHalf.Checked)
             {
                 itemId = 2;
             }
 
-            string sessionId = textBox3.Text;
+            string sessionId = textBoxSessionId.Text;
             string next = ctx + "Operations_Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
-            if (checkBox1.Checked)
+            if (checkBoxRadar.Checked)
             {
                 next += "&radar=1";
             }
@@ -54,31 +55,31 @@ namespace Flying3
                 var json = DynamicJson.Parse(sr.ReadToEnd());
                 if (!json.IsDefined("contents"))
                 {
-                    textBox1.Text = "UNKNOWN ERROR";
+                    textBoxContents.Text = "UNKNOWN ERROR";
                     sr.Close();
                     st.Close();
                     break;
                 }
                 var contents = json.contents;
-                textBox1.Text = contents + "\r\n";
+                textBoxContents.Text = contents + "\r\n";
 
                 if (contents.IsDefined("point"))
                 {
-                    textBox2.Text = ((int)contents.point).ToString();
+                    textBoxPoint.Text = ((int)contents.point).ToString();
                 }
                 if (contents.IsDefined("item"))
                 {
-                    textBox4.Text = ((int)contents.item.quant).ToString();
+                    textBoxPeronamin.Text = ((int)contents.item.quant).ToString();
                 }
                 if (contents.IsDefined("quest") && contents.quest.IsDefined("radar"))
                 {
                     if (contents.quest.radar is string)
                     {
-                        textBox5.Text = contents.quest.radar;
+                        textBoxRadar.Text = contents.quest.radar;
                     }
                     else
                     {
-                        textBox5.Text = ((int)contents.quest.radar).ToString();
+                        textBoxRadar.Text = ((int)contents.quest.radar).ToString();
                     }
                 }
                 if (!contents.IsDefined("player"))
@@ -92,11 +93,11 @@ namespace Flying3
                     {
                         if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
                         {
-                            textBox1.Text = json.header.error_msg;
+                            textBoxContents.Text = json.header.error_msg;
                         }
                         else
                         {
-                            textBox1.Text = "UNKNOWN ERROR";
+                            textBoxContents.Text = "UNKNOWN ERROR";
                         }
                         sr.Close();
                         st.Close();
@@ -135,59 +136,59 @@ namespace Flying3
             setButtonEnd();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonStop_Click(object sender, EventArgs e)
         {
             isStop = true;
         }
 
-        private async void button3_Click(object sender, EventArgs e)
+        private async void buttonGacha_Click(object sender, EventArgs e)
         {
             setButtonStart();
 
             string divide = "free";
-            if (radioButton4.Checked)
+            if (radioButtonRGacha.Checked)
             {
                 divide = "rare";
             }
-            else if (radioButton5.Checked)
+            else if (radioButtonPGacha.Checked)
             {
                 divide = "pvpBox";
             }
 
-            string sessionId = textBox3.Text;
-            string nGacha = ctx + "Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=" + divide;
-            string nGachaChoice = ctx + "Gacha/choice?sessionId=" + sessionId + "&divide=" + divide + "&format=json&token=tokendummy&select=1";
+            string sessionId = textBoxSessionId.Text;
+            string gacha = ctx + "Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=" + divide;
+            string gachaChoice = ctx + "Gacha/choice?sessionId=" + sessionId + "&divide=" + divide + "&format=json&token=tokendummy&select=1";
 
             while (!isStop)
             {
-                WebRequest req = WebRequest.Create(nGacha);
+                WebRequest req = WebRequest.Create(gacha);
                 WebResponse res = req.GetResponse();
                 Stream st = res.GetResponseStream();
                 StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
                 var json = DynamicJson.Parse(sr.ReadToEnd());
                 if (!json.IsDefined("contents"))
                 {
-                    textBox1.Text = "UNKNOWN ERROR";
+                    textBoxContents.Text = "UNKNOWN ERROR";
                     sr.Close();
                     st.Close();
                     break;
                 }
                 var contents = json.contents;
-                textBox1.Text = contents + "\r\n";
+                textBoxContents.Text = contents + "\r\n";
 
                 if (!contents.IsDefined("player"))
                 {
                     if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
                     {
-                        textBox1.Text = json.header.error_msg;
+                        textBoxContents.Text = json.header.error_msg;
                     }
                     else if (json.IsDefined("header") && json.header.IsDefined("error"))
                     {
-                        textBox1.Text = json.header.error;
+                        textBoxContents.Text = json.header.error;
                     }
                     else
                     {
-                        textBox1.Text = "UNKNOWN ERROR";
+                        textBoxContents.Text = "UNKNOWN ERROR";
                     }
                     sr.Close();
                     st.Close();
@@ -196,36 +197,36 @@ namespace Flying3
 
                 sr.Close();
                 st.Close();
-                await Task.Delay(300);
+                await Task.Delay(100);
 
-                req = WebRequest.Create(nGachaChoice);
+                req = WebRequest.Create(gachaChoice);
                 res = req.GetResponse();
                 st = res.GetResponseStream();
                 sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
                 json = DynamicJson.Parse(sr.ReadToEnd());
                 contents = json.contents;
-                textBox1.Text = contents + "\r\n";
+                textBoxContents.Text = contents + "\r\n";
 
                 sr.Close();
                 st.Close();
-                await Task.Delay(300);
+                await Task.Delay(100);
 
             }
 
             setButtonEnd();
         }
 
-        private async void button5_Click(object sender, EventArgs e)
+        private async void buttonQuest_Click(object sender, EventArgs e)
         {
             setButtonStart();
 
             int itemId = 1;
-            if (radioButton2.Checked)
+            if (radioButtonHalf.Checked)
             {
                 itemId = 2;
             }
 
-            string sessionId = textBox3.Text;
+            string sessionId = textBoxSessionId.Text;
             string next = ctx + "Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0&id=0";
             string choice = ctx + "Chancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
             string recover = ctx + "Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
@@ -240,17 +241,17 @@ namespace Flying3
                 var json = DynamicJson.Parse(sr.ReadToEnd());
                 if (!json.IsDefined("contents"))
                 {
-                    textBox1.Text = "UNKNOWN ERROR";
+                    textBoxContents.Text = "UNKNOWN ERROR";
                     sr.Close();
                     st.Close();
                     break;
                 }
                 var contents = json.contents;
-                textBox1.Text = contents + "\r\n";
+                textBoxContents.Text = contents + "\r\n";
 
                 if (contents.IsDefined("item"))
                 {
-                    textBox4.Text = ((int)contents.item.quant).ToString();
+                    textBoxPeronamin.Text = ((int)contents.item.quant).ToString();
                 }
                 if (!contents.IsDefined("player"))
                 {
@@ -263,11 +264,11 @@ namespace Flying3
                     {
                         if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
                         {
-                            textBox1.Text = json.header.error_msg;
+                            textBoxContents.Text = json.header.error_msg;
                         }
                         else
                         {
-                            textBox1.Text = "UNKNOWN ERROR";
+                            textBoxContents.Text = "UNKNOWN ERROR";
                         }
                         sr.Close();
                         st.Close();
@@ -296,20 +297,53 @@ namespace Flying3
 
         private void button4_Click(object sender, EventArgs e)
         {
+            ICookieGetter[] cookieGetters = CookieGetter.CreateInstances(true);
+            ICookieGetter cookieGetter = null;
+            foreach (ICookieGetter tmpCookieGetter in cookieGetters)
+            {
+                if (tmpCookieGetter.Status.BrowserType == BrowserType.GoogleChrome)
+                {
+                    cookieGetter = tmpCookieGetter;
+                    break;
+                }
+            }
+            if (cookieGetter == null)
+            {
+                return;
+            }
+
+            Cookie cookie;
+            try
+            {
+                cookie = cookieGetter.GetCookie(new Uri("http://www.prpr.dmmgames.com/"), "perpero");
+            }
+            catch (CookieGetterException ex)
+            {
+                textBoxContents.Text = ex.Message;
+                return;
+            }
+
+            if (cookie != null)
+            {
+                textBoxContents.Text = cookie.Name;
+                textBoxContents.Text += cookie.Value;
+                textBoxContents.Text += cookie.Domain;
+                textBoxContents.Text += cookie.Path;
+            }
 
         }
 
-        private async void button6_Click(object sender, EventArgs e)
+        private async void buttonPerocolo_Click(object sender, EventArgs e)
         {
             setButtonStart();
 
-            string sessionId = textBox3.Text;
+            string sessionId = textBoxSessionId.Text;
             string opponentPlayerId = "";
             int rank = 5;
-            if (textBox8.Text != "")
+            if (textBoxRank.Text != "")
             {
                 int i = 0;
-                if (int.TryParse(textBox8.Text, out i))
+                if (int.TryParse(textBoxRank.Text, out i))
                 {
                     rank = i;
                 }
@@ -329,7 +363,7 @@ namespace Flying3
                 }
                 catch (WebException ex)
                 {
-                    textBox1.Text = ex.Message;
+                    textBoxContents.Text = ex.Message;
                     continue;
                 }
                 Stream st = res.GetResponseStream();
@@ -337,23 +371,23 @@ namespace Flying3
                 var json = DynamicJson.Parse(sr.ReadToEnd());
                 if (!json.IsDefined("contents"))
                 {
-                    textBox1.Text = "UNKNOWN ERROR";
+                    textBoxContents.Text = "UNKNOWN ERROR";
                     sr.Close();
                     st.Close();
                     break;
                 }
                 var contents = json.contents;
-                textBox1.Text = contents + "\r\n";
+                textBoxContents.Text = contents + "\r\n";
 
                 if (!contents.IsDefined("player"))
                 {
                     if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
                     {
-                        textBox1.Text = json.header.error_msg;
+                        textBoxContents.Text = json.header.error_msg;
                     }
                     else
                     {
-                        textBox1.Text = "UNKNOWN ERROR";
+                        textBoxContents.Text = "UNKNOWN ERROR";
                     }
                     sr.Close();
                     st.Close();
@@ -382,7 +416,7 @@ namespace Flying3
                             uri = battle + opponentPlayerId;
                             if (contents.consecutiveWins is string)
                             {
-                                textBox6.Text = contents.consecutiveWins;
+                                textBoxCWins.Text = contents.consecutiveWins;
                             }
                         }
                     }
@@ -396,29 +430,48 @@ namespace Flying3
             setButtonEnd();
         }
 
-        private async void button7_Click(object sender, EventArgs e)
+        private async void buttonShinneitai_Click(object sender, EventArgs e)
         {
             setButtonStart();
 
             int itemId = 1;
-            if (radioButton2.Checked)
+            if (radioButtonHalf.Checked)
             {
                 itemId = 2;
             }
 
-            string sessionId = textBox3.Text;
-            int biyakuLevel = 15;
-            if (textBox7.Text != "")
+            string sessionId = textBoxSessionId.Text;
+            int biyakuLevel = 100000;
+            if (textBoxBiyakuLevel.Text != "")
             {
                 int i = 0;
-                if (int.TryParse(textBox7.Text, out i))
+                if (int.TryParse(textBoxBiyakuLevel.Text, out i))
                 {
                     biyakuLevel = i;
                 }
             }
+            int nBiyakuLevel = 100000;
+            if (textBoxNBiyakuLevel.Text != "")
+            {
+                int i = 0;
+                if (int.TryParse(textBoxNBiyakuLevel.Text, out i))
+                {
+                    nBiyakuLevel = i;
+                }
+            }
+            int hiyakuLevel = 100000;
+            if (textBoxHiyakuLevel.Text != "")
+            {
+                int i = 0;
+                if (int.TryParse(textBoxHiyakuLevel.Text, out i))
+                {
+                    hiyakuLevel = i;
+                }
+            }
             string raidboss_battle_id = "";
             int attack_count = 0;
-            string next = ctx + "Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
+            //string top = ctx + "Raidboss_Event/?sessionId=" + sessionId + "&format=json";
+            string next = ctx + "Raidboss_Event-Quest/next?sessionId=" + sessionId + "&chancetime=0";
             string battle = ctx + "Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss%5Fbattle%5Fid=";
             string escape = ctx + "Raidboss_Raidboss/escape?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
             string debilitate = ctx + "Raidboss_Raidboss/debilitate?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
@@ -436,13 +489,13 @@ namespace Flying3
                 var json = DynamicJson.Parse(sr.ReadToEnd());
                 if (!json.IsDefined("contents"))
                 {
-                    textBox1.Text = "UNKNOWN ERROR";
+                    textBoxContents.Text = "UNKNOWN ERROR";
                     sr.Close();
                     st.Close();
                     break;
                 }
                 var contents = json.contents;
-                textBox1.Text = contents + "\r\n";
+                textBoxContents.Text = contents + "\r\n";
 
                 if (!contents.IsDefined("player"))
                 {
@@ -455,11 +508,11 @@ namespace Flying3
                     {
                         if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
                         {
-                            textBox1.Text = json.header.error_msg;
+                            textBoxContents.Text = json.header.error_msg;
                         }
                         else
                         {
-                            textBox1.Text = "UNKNOWN ERROR";
+                            textBoxContents.Text = "UNKNOWN ERROR";
                         }
                         sr.Close();
                         st.Close();
@@ -482,13 +535,13 @@ namespace Flying3
                         {
                             level = (int)contents.boss.level;
                         }
-                        if (type == 1 && level > 50)
+                        if ((type == 0 && checkBoxNHiyaku.Checked) || (type == 1 && level >= hiyakuLevel))
                         {
                             uri = escape + raidboss_battle_id;
                         }
                         else
                         {
-                            if ((type == 0 && level < 400) || level < biyakuLevel)
+                            if ((type == 0 && level < nBiyakuLevel) || (type == 1 && level < biyakuLevel))
                             {
                                 uri = battle + raidboss_battle_id;
                             }
@@ -596,20 +649,20 @@ namespace Flying3
         private void setButtonStart()
         {
             isStop = false;
-            button1.Enabled = false;
-            button3.Enabled = false;
-            button5.Enabled = false;
-            button6.Enabled = false;
-            button7.Enabled = false;
+            buttonDaisakusen.Enabled = false;
+            buttonGacha.Enabled = false;
+            buttonQuest.Enabled = false;
+            buttonPerocolo.Enabled = false;
+            buttonShinneitai.Enabled = false;
         }
 
         private void setButtonEnd()
         {
-            button1.Enabled = true;
-            button3.Enabled = true;
-            button5.Enabled = true;
-            button6.Enabled = true;
-            button7.Enabled = true;
+            buttonDaisakusen.Enabled = true;
+            buttonGacha.Enabled = true;
+            buttonQuest.Enabled = true;
+            buttonPerocolo.Enabled = true;
+            buttonShinneitai.Enabled = true;
         }
 
     }
