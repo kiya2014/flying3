@@ -16,8 +16,9 @@ namespace Flying3
 {
     public partial class Form1 : Form
     {
-        Boolean isStop = false;
+        bool isStop = false;
         string ctx = "http://www.prpr.dmmgames.com/";
+        string sessionKey = "perpero";
 
         public Form1()
         {
@@ -48,20 +49,12 @@ namespace Flying3
 
             while (!isStop)
             {
-                WebRequest req = WebRequest.Create(uri);
-                WebResponse res = req.GetResponse();
-                Stream st = res.GetResponseStream();
-                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
-                var json = DynamicJson.Parse(sr.ReadToEnd());
-                if (!json.IsDefined("contents"))
+                dynamic json = getJson(uri);
+                if (json == null)
                 {
-                    textBoxContents.Text = "UNKNOWN ERROR";
-                    sr.Close();
-                    st.Close();
-                    break;
+                    return;
                 }
-                var contents = json.contents;
-                textBoxContents.Text = contents + "\r\n";
+                dynamic contents = json.contents;
 
                 if (contents.IsDefined("point"))
                 {
@@ -99,8 +92,6 @@ namespace Flying3
                         {
                             textBoxContents.Text = "UNKNOWN ERROR";
                         }
-                        sr.Close();
-                        st.Close();
                         break;
                     }
                 }
@@ -128,17 +119,10 @@ namespace Flying3
                     }
                 }
 
-                sr.Close();
-                st.Close();
                 await Task.Delay(300);
             }
 
             setButtonEnd();
-        }
-
-        private void buttonStop_Click(object sender, EventArgs e)
-        {
-            isStop = true;
         }
 
         private async void buttonGacha_Click(object sender, EventArgs e)
@@ -161,20 +145,12 @@ namespace Flying3
 
             while (!isStop)
             {
-                WebRequest req = WebRequest.Create(gacha);
-                WebResponse res = req.GetResponse();
-                Stream st = res.GetResponseStream();
-                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
-                var json = DynamicJson.Parse(sr.ReadToEnd());
-                if (!json.IsDefined("contents"))
+                dynamic json = getJson(gacha);
+                if (json == null)
                 {
-                    textBoxContents.Text = "UNKNOWN ERROR";
-                    sr.Close();
-                    st.Close();
-                    break;
+                    return;
                 }
-                var contents = json.contents;
-                textBoxContents.Text = contents + "\r\n";
+                dynamic contents = json.contents;
 
                 if (!contents.IsDefined("player"))
                 {
@@ -190,25 +166,17 @@ namespace Flying3
                     {
                         textBoxContents.Text = "UNKNOWN ERROR";
                     }
-                    sr.Close();
-                    st.Close();
                     break;
                 }
 
-                sr.Close();
-                st.Close();
                 await Task.Delay(100);
 
-                req = WebRequest.Create(gachaChoice);
-                res = req.GetResponse();
-                st = res.GetResponseStream();
-                sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
-                json = DynamicJson.Parse(sr.ReadToEnd());
-                contents = json.contents;
-                textBoxContents.Text = contents + "\r\n";
+                json = getJson(gachaChoice);
+                if (json == null)
+                {
+                    return;
+                }
 
-                sr.Close();
-                st.Close();
                 await Task.Delay(100);
 
             }
@@ -234,20 +202,12 @@ namespace Flying3
 
             while (!isStop)
             {
-                WebRequest req = WebRequest.Create(uri);
-                WebResponse res = req.GetResponse();
-                Stream st = res.GetResponseStream();
-                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
-                var json = DynamicJson.Parse(sr.ReadToEnd());
-                if (!json.IsDefined("contents"))
+                dynamic json = getJson(uri);
+                if (json == null)
                 {
-                    textBoxContents.Text = "UNKNOWN ERROR";
-                    sr.Close();
-                    st.Close();
-                    break;
+                    return;
                 }
-                var contents = json.contents;
-                textBoxContents.Text = contents + "\r\n";
+                dynamic contents = json.contents;
 
                 if (contents.IsDefined("item"))
                 {
@@ -270,8 +230,6 @@ namespace Flying3
                         {
                             textBoxContents.Text = "UNKNOWN ERROR";
                         }
-                        sr.Close();
-                        st.Close();
                         break;
                     }
                 }
@@ -287,46 +245,10 @@ namespace Flying3
                     }
                 }
 
-                sr.Close();
-                st.Close();
                 await Task.Delay(300);
             }
 
             setButtonEnd();
-        }
-
-        private String getSessionId()
-        {
-            ICookieGetter[] cookieGetters = CookieGetter.CreateInstances(true);
-            ICookieGetter cookieGetter = null;
-            foreach (ICookieGetter tmpCookieGetter in cookieGetters)
-            {
-                if (tmpCookieGetter.Status.BrowserType == BrowserType.GoogleChrome)
-                {
-                    cookieGetter = tmpCookieGetter;
-                    break;
-                }
-            }
-            if (cookieGetter == null)
-            {
-                return textBoxSessionId.Text;
-            }
-
-            Cookie cookie;
-            try
-            {
-                cookie = cookieGetter.GetCookie(new Uri("http://www.prpr.dmmgames.com/"), "perpero");
-            }
-            catch (CookieGetterException ex)
-            {
-                return textBoxSessionId.Text;
-            }
-
-            if (cookie != null)
-            {
-                return cookie.Value;
-            }
-            return textBoxSessionId.Text;
         }
 
         private async void buttonPerocolo_Click(object sender, EventArgs e)
@@ -335,7 +257,7 @@ namespace Flying3
 
             string sessionId = getSessionId();
             string opponentPlayerId = "";
-            int rank = 5;
+            int rank = 1;
             if (textBoxRank.Text != "")
             {
                 int i = 0;
@@ -351,29 +273,12 @@ namespace Flying3
 
             while (!isStop)
             {
-                WebRequest req = WebRequest.Create(uri);
-                WebResponse res = null;
-                try
+                dynamic json = getJson(uri);
+                if (json == null)
                 {
-                    res = req.GetResponse();
+                    return;
                 }
-                catch (WebException ex)
-                {
-                    textBoxContents.Text = ex.Message;
-                    continue;
-                }
-                Stream st = res.GetResponseStream();
-                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
-                var json = DynamicJson.Parse(sr.ReadToEnd());
-                if (!json.IsDefined("contents"))
-                {
-                    textBoxContents.Text = "UNKNOWN ERROR";
-                    sr.Close();
-                    st.Close();
-                    break;
-                }
-                var contents = json.contents;
-                textBoxContents.Text = contents + "\r\n";
+                dynamic contents = json.contents;
 
                 if (!contents.IsDefined("player"))
                 {
@@ -385,8 +290,6 @@ namespace Flying3
                     {
                         textBoxContents.Text = "UNKNOWN ERROR";
                     }
-                    sr.Close();
-                    st.Close();
                     break;
                 }
                 else
@@ -418,8 +321,6 @@ namespace Flying3
                     }
                 }
 
-                sr.Close();
-                st.Close();
                 await Task.Delay(5000);
             }
 
@@ -467,6 +368,8 @@ namespace Flying3
             string raidboss_battle_id = "";
             int attack_count = 0;
             //string top = ctx + "Raidboss_Event/?sessionId=" + sessionId + "&format=json";
+            string list = ctx + "Raidboss_Battle-List?sessionId=" + sessionId + "&format=json&mode=0&page=";
+            string bossTop = ctx + "Raidboss_Raidboss?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
             string next = ctx + "Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json";
             string battle = ctx + "Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss%5Fbattle%5Fid=";
             string escape = ctx + "Raidboss_Raidboss/escape?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
@@ -478,20 +381,12 @@ namespace Flying3
 
             while (!isStop)
             {
-                WebRequest req = WebRequest.Create(uri);
-                WebResponse res = req.GetResponse();
-                Stream st = res.GetResponseStream();
-                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
-                var json = DynamicJson.Parse(sr.ReadToEnd());
-                if (!json.IsDefined("contents"))
+                dynamic json = getJson(uri);
+                if (json == null)
                 {
-                    textBoxContents.Text = "UNKNOWN ERROR";
-                    sr.Close();
-                    st.Close();
-                    break;
+                    return;
                 }
-                var contents = json.contents;
-                textBoxContents.Text = contents + "\r\n";
+                dynamic contents = json.contents;
 
                 if (!contents.IsDefined("player"))
                 {
@@ -510,16 +405,75 @@ namespace Flying3
                         {
                             textBoxContents.Text = "UNKNOWN ERROR";
                         }
-                        sr.Close();
-                        st.Close();
                         break;
                     }
                 }
                 else
                 {
-                    if (contents.IsDefined("raidboss_battle_id"))
+                    string battleId = "";
+                    int maxPage = 0;
+                    int i = 0;
+                    while (battleId == "" && i <= maxPage)
                     {
-                        raidboss_battle_id = contents.raidboss_battle_id;
+                        await Task.Delay(100);
+                        json = getJson(list + i);
+                        if (json == null)
+                        {
+                            return;
+                        }
+                        dynamic contentsInfo = json.contents;
+
+                        maxPage = (int)contentsInfo.page.maxPage;
+                        dynamic[] listInfo = (dynamic[])contentsInfo.listInfo;
+                        foreach (dynamic info in listInfo)
+                        {
+                            int isKill = 0;
+                            if (info.boss.isKill is string)
+                            {
+                                isKill = int.Parse(info.boss.isKill);
+                            }
+                            else
+                            {
+                                isKill = (int)info.boss.isKill;
+                            }
+                            int isAttack = 0;
+                            if (info.boss.isAttack is string)
+                            {
+                                isAttack = int.Parse(info.boss.isAttack);
+                            }
+                            else
+                            {
+                                isAttack = (int)info.boss.isAttack;
+                            }
+                            if (info.discover.id == contentsInfo.player.playerId && isKill == 0 && isAttack == 0)
+                            {
+                                battleId = info.boss.battleId;
+                            }
+                        }
+                        i++;
+                    }
+
+                    if (battleId != "")
+                    {
+                        await Task.Delay(100);
+                        json = getJson(bossTop + battleId);
+                        if (json == null)
+                        {
+                            return;
+                        }
+                        contents = json.contents;
+                    }
+
+                    if (battleId != "" || contents.IsDefined("raidboss_battle_id"))
+                    {
+                        if (battleId != "")
+                        {
+                            raidboss_battle_id = battleId;
+                        }
+                        else
+                        {
+                            raidboss_battle_id = contents.raidboss_battle_id;
+                        }
                         attack_count = 0;
                         int type = (int)contents.boss.type;
                         int level = 0;
@@ -600,11 +554,11 @@ namespace Flying3
                     {
                         uri = invite;
                         dynamic[] helpList = (dynamic[])contents.helpList;
-                        int i = 0;
                         Array.Sort(helpList, (a, b) => (int)a.player.login - (int)b.player.login);
+                        int j = 0;
                         foreach (dynamic helpFriend in helpList)
                         {
-                            if (i < 20)
+                            if (j < 20)
                             {
                                 uri = uri + "&friends%5B%5D=" + helpFriend.player.id;
                             }
@@ -612,7 +566,7 @@ namespace Flying3
                             {
                                 break;
                             }
-                            i++;
+                            j++;
                         }
                         uri = uri + "&raidboss%5Fbattle%5Fid=" + raidboss_battle_id;
                     }
@@ -633,13 +587,85 @@ namespace Flying3
                         uri = recover;
                     }
                 }
-
-                sr.Close();
-                st.Close();
                 await Task.Delay(2000);
             }
 
             setButtonEnd();
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            isStop = true;
+        }
+
+        private String getSessionId()
+        {
+            ICookieGetter[] cookieGetters = CookieGetter.CreateInstances(true);
+            ICookieGetter cookieGetter = null;
+            foreach (ICookieGetter tmpCookieGetter in cookieGetters)
+            {
+                if (tmpCookieGetter.Status.BrowserType == BrowserType.GoogleChrome)
+                {
+                    cookieGetter = tmpCookieGetter;
+                    break;
+                }
+            }
+            if (cookieGetter == null)
+            {
+                return textBoxSessionId.Text;
+            }
+
+            Cookie cookie;
+            try
+            {
+                cookie = cookieGetter.GetCookie(new Uri(ctx), sessionKey);
+            }
+            catch (CookieGetterException ex)
+            {
+                return textBoxSessionId.Text;
+            }
+
+            if (cookie != null)
+            {
+                return cookie.Value;
+            }
+            return textBoxSessionId.Text;
+        }
+
+        private dynamic getJson(string uri)
+        {
+            while (!isStop)
+            {
+                WebRequest req = WebRequest.Create(uri);
+                WebResponse res = null;
+                try
+                {
+                    res = req.GetResponse();
+                }
+                catch (WebException)
+                {
+                    System.Threading.Thread.Sleep(2000);
+                    continue;
+                }
+                Stream st = res.GetResponseStream();
+                StreamReader sr = new StreamReader(st, Encoding.GetEncoding("Shift_JIS"));
+                dynamic json = DynamicJson.Parse(sr.ReadToEnd());
+                sr.Close();
+                st.Close();
+                if (!json.IsDefined("contents"))
+                {
+                    textBoxContents.Text = "UNKNOWN ERROR";
+                    setButtonEnd();
+                    return null;
+                }
+                else
+                {
+                    dynamic contents = json.contents;
+                    textBoxContents.Text = contents + "\r\n";
+                    return json;
+                }
+            }
+            return null;
         }
 
         private void setButtonStart()
