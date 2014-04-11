@@ -34,7 +34,7 @@ namespace Flying3
                 itemId = 2;
             }
 
-            string sessionId = textBoxSessionId.Text;
+            string sessionId = getSessionId();
             string next = ctx + "Operations_Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0";
             if (checkBoxRadar.Checked)
             {
@@ -155,7 +155,7 @@ namespace Flying3
                 divide = "pvpBox";
             }
 
-            string sessionId = textBoxSessionId.Text;
+            string sessionId = getSessionId();
             string gacha = ctx + "Gacha/gacha?sessionId=" + sessionId + "&format=json&select=ticket&divide=" + divide;
             string gachaChoice = ctx + "Gacha/choice?sessionId=" + sessionId + "&divide=" + divide + "&format=json&token=tokendummy&select=1";
 
@@ -226,7 +226,7 @@ namespace Flying3
                 itemId = 2;
             }
 
-            string sessionId = textBoxSessionId.Text;
+            string sessionId = getSessionId();
             string next = ctx + "Quest/next?sessionId=" + sessionId + "&format=json&chancetime=0&id=0";
             string choice = ctx + "Chancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
             string recover = ctx + "Item/use?sessionId=" + sessionId + "&itemId=" + itemId + "&format=json&quant=1";
@@ -295,7 +295,7 @@ namespace Flying3
             setButtonEnd();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private String getSessionId()
         {
             ICookieGetter[] cookieGetters = CookieGetter.CreateInstances(true);
             ICookieGetter cookieGetter = null;
@@ -309,7 +309,7 @@ namespace Flying3
             }
             if (cookieGetter == null)
             {
-                return;
+                return textBoxSessionId.Text;
             }
 
             Cookie cookie;
@@ -319,25 +319,21 @@ namespace Flying3
             }
             catch (CookieGetterException ex)
             {
-                textBoxContents.Text = ex.Message;
-                return;
+                return textBoxSessionId.Text;
             }
 
             if (cookie != null)
             {
-                textBoxContents.Text = cookie.Name;
-                textBoxContents.Text += cookie.Value;
-                textBoxContents.Text += cookie.Domain;
-                textBoxContents.Text += cookie.Path;
+                return cookie.Value;
             }
-
+            return textBoxSessionId.Text;
         }
 
         private async void buttonPerocolo_Click(object sender, EventArgs e)
         {
             setButtonStart();
 
-            string sessionId = textBoxSessionId.Text;
+            string sessionId = getSessionId();
             string opponentPlayerId = "";
             int rank = 5;
             if (textBoxRank.Text != "")
@@ -440,7 +436,7 @@ namespace Flying3
                 itemId = 2;
             }
 
-            string sessionId = textBoxSessionId.Text;
+            string sessionId = getSessionId();
             int biyakuLevel = 100000;
             if (textBoxBiyakuLevel.Text != "")
             {
@@ -471,7 +467,7 @@ namespace Flying3
             string raidboss_battle_id = "";
             int attack_count = 0;
             //string top = ctx + "Raidboss_Event/?sessionId=" + sessionId + "&format=json";
-            string next = ctx + "Raidboss_Event-Quest/next?sessionId=" + sessionId + "&chancetime=0";
+            string next = ctx + "Raidboss_Event-Quest/next?sessionId=" + sessionId + "&format=json";
             string battle = ctx + "Raidboss_Raidboss/battle?sessionId=" + sessionId + "&format=json&battlePoint=1&raidboss%5Fbattle%5Fid=";
             string escape = ctx + "Raidboss_Raidboss/escape?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
             string debilitate = ctx + "Raidboss_Raidboss/debilitate?sessionId=" + sessionId + "&format=json&raidboss%5Fbattle%5Fid=";
