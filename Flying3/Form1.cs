@@ -410,6 +410,10 @@ namespace Flying3
                 }
                 else
                 {
+                    if (contents.IsDefined("quest") && contents.quest.IsDefined("boss") && (int)contents.quest.boss.type == 3)
+                    {
+                        getJson(bossTop + contents.quest.boss.bossBattleId);
+                    }
                     string battleId = "";
                     int maxPage = 0;
                     int i = 0;
@@ -422,7 +426,18 @@ namespace Flying3
                             return;
                         }
                         dynamic contentsInfo = json.contents;
-
+                        if (!contentsInfo.IsDefined("player"))
+                        {
+                            if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
+                            {
+                                textBoxContents.Text = json.header.error_msg;
+                            }
+                            else
+                            {
+                                textBoxContents.Text = "UNKNOWN ERROR";
+                            }
+                            break;
+                        }
                         maxPage = (int)contentsInfo.page.maxPage;
                         dynamic[] listInfo = (dynamic[])contentsInfo.listInfo;
                         foreach (dynamic info in listInfo)
@@ -513,7 +528,7 @@ namespace Flying3
                                 int wait = (int)contents.raidbossStatus.waitCalculation;
                                 if (wait > 0)
                                 {
-                                    await Task.Delay(30000);
+                                    await Task.Delay(10000);
                                 }
                             }
                         }
@@ -620,13 +635,14 @@ namespace Flying3
             {
                 cookie = cookieGetter.GetCookie(new Uri(ctx), sessionKey);
             }
-            catch (CookieGetterException ex)
+            catch (CookieGetterException)
             {
                 return textBoxSessionId.Text;
             }
 
             if (cookie != null)
             {
+                textBoxSessionId.Text = cookie.Value;
                 return cookie.Value;
             }
             return textBoxSessionId.Text;
