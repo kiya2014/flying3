@@ -477,6 +477,18 @@ namespace Flying3
                             return;
                         }
                         contents = json.contents;
+                        if (!contents.IsDefined("player"))
+                        {
+                            if (json.IsDefined("header") && json.header.IsDefined("error_msg"))
+                            {
+                                textBoxContents.Text = json.header.error_msg;
+                            }
+                            else
+                            {
+                                textBoxContents.Text = "UNKNOWN ERROR";
+                            }
+                            break;
+                        }
                     }
 
                     if (battleId != "" || contents.IsDefined("raidboss_battle_id"))
