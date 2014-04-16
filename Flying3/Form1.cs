@@ -384,6 +384,7 @@ namespace Flying3
                 dynamic json = getJson(uri);
                 if (json == null)
                 {
+                    setButtonEnd();
                     return;
                 }
                 dynamic contents = json.contents;
@@ -423,6 +424,7 @@ namespace Flying3
                         json = getJson(list + i);
                         if (json == null)
                         {
+                            setButtonEnd();
                             return;
                         }
                         dynamic contentsInfo = json.contents;
@@ -474,6 +476,7 @@ namespace Flying3
                         json = getJson(bossTop + battleId);
                         if (json == null)
                         {
+                            setButtonEnd();
                             return;
                         }
                         contents = json.contents;
@@ -540,7 +543,7 @@ namespace Flying3
                                 int wait = (int)contents.raidbossStatus.waitCalculation;
                                 if (wait > 0)
                                 {
-                                    await Task.Delay(10000);
+                                    await Task.Delay(5000);
                                 }
                             }
                         }
@@ -614,7 +617,7 @@ namespace Flying3
                         uri = recover;
                     }
                 }
-                await Task.Delay(2000);
+                await Task.Delay(1000);
             }
 
             setButtonEnd();
