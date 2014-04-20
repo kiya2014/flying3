@@ -515,13 +515,34 @@ namespace Flying3
                         {
                             level = (int)contents.boss.level;
                         }
+                        int max_hp = 0;
+                        int hp = 0;
+                        if (contents.boss.IsDefined("max_hp"))
+                        {
+                            if (contents.boss.max_hp is string)
+                            {
+                                max_hp = int.Parse(contents.boss.max_hp);
+                            }
+                            else
+                            {
+                                max_hp = (int)contents.boss.max_hp;
+                            }
+                            if (contents.boss.hp is string)
+                            {
+                                hp = int.Parse(contents.boss.hp);
+                            }
+                            else
+                            {
+                                hp = (int)contents.boss.hp;
+                            }
+                        }
                         if ((type == 0 && checkBoxNHiyaku.Checked) || (type == 1 && level >= hiyakuLevel))
                         {
                             uri = escape + raidboss_battle_id;
                         }
                         else
                         {
-                            if ((type == 0 && level < nBiyakuLevel) || (type == 1 && level < biyakuLevel))
+                            if (max_hp == 0 || max_hp != hp || (type == 0 && level < nBiyakuLevel) || (type == 1 && level < biyakuLevel))
                             {
                                 uri = battle + raidboss_battle_id;
                             }
