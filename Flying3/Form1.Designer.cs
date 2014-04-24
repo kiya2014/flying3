@@ -63,6 +63,7 @@
             this.checkBoxNHiyaku = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.textBoxNBiyakuLevel = new System.Windows.Forms.TextBox();
+            this.checkBoxSaveMode = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -90,7 +91,7 @@
             // 
             // textBoxPoint
             // 
-            this.textBoxPoint.Location = new System.Drawing.Point(325, 54);
+            this.textBoxPoint.Location = new System.Drawing.Point(394, 56);
             this.textBoxPoint.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxPoint.Name = "textBoxPoint";
             this.textBoxPoint.ReadOnly = true;
@@ -101,7 +102,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(323, 40);
+            this.label2.Location = new System.Drawing.Point(392, 42);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(30, 12);
@@ -162,7 +163,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(409, 40);
+            this.label4.Location = new System.Drawing.Point(478, 42);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(57, 12);
@@ -171,7 +172,7 @@
             // 
             // textBoxPeronamin
             // 
-            this.textBoxPeronamin.Location = new System.Drawing.Point(412, 54);
+            this.textBoxPeronamin.Location = new System.Drawing.Point(481, 56);
             this.textBoxPeronamin.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxPeronamin.Name = "textBoxPeronamin";
             this.textBoxPeronamin.ReadOnly = true;
@@ -230,7 +231,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(488, 40);
+            this.label5.Location = new System.Drawing.Point(557, 42);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(31, 12);
@@ -239,7 +240,7 @@
             // 
             // textBoxRadar
             // 
-            this.textBoxRadar.Location = new System.Drawing.Point(491, 54);
+            this.textBoxRadar.Location = new System.Drawing.Point(560, 56);
             this.textBoxRadar.Margin = new System.Windows.Forms.Padding(2);
             this.textBoxRadar.Name = "textBoxRadar";
             this.textBoxRadar.ReadOnly = true;
@@ -426,11 +427,23 @@
             this.textBoxNBiyakuLevel.TabIndex = 34;
             this.textBoxNBiyakuLevel.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
+            // checkBoxSaveMode
+            // 
+            this.checkBoxSaveMode.AutoSize = true;
+            this.checkBoxSaveMode.Location = new System.Drawing.Point(298, 58);
+            this.checkBoxSaveMode.Margin = new System.Windows.Forms.Padding(2);
+            this.checkBoxSaveMode.Name = "checkBoxSaveMode";
+            this.checkBoxSaveMode.Size = new System.Drawing.Size(75, 16);
+            this.checkBoxSaveMode.TabIndex = 36;
+            this.checkBoxSaveMode.Text = "saveMode";
+            this.checkBoxSaveMode.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(649, 646);
+            this.Controls.Add(this.checkBoxSaveMode);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.textBoxNBiyakuLevel);
             this.Controls.Add(this.checkBoxNHiyaku);
@@ -509,6 +522,7 @@
         private System.Windows.Forms.CheckBox checkBoxNHiyaku;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBoxNBiyakuLevel;
+        private System.Windows.Forms.CheckBox checkBoxSaveMode;
     }
 }
 

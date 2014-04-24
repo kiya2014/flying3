@@ -41,6 +41,7 @@ namespace Flying3
             {
                 next += "&radar=1";
             }
+            string top = ctx + "Operations_Top?sessionId=" + sessionId + "&format=json";
             string clearChoice = ctx + "Operations_Clearchancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
             string pointChoice = ctx + "Operations_Pointchancetime/choice?sessionId=" + sessionId + "&format=json&select=1";
             string battle = ctx + "Operations_Quest/zako?sessionId=" + sessionId + "&format=json";
@@ -108,6 +109,10 @@ namespace Flying3
                     else if (contents.IsDefined("itemList") && contents.player.battlePoint.value >= 3)
                     {
                         uri = battle;
+                    }
+                    else if (checkBoxSaveMode.Checked && contents.player.battlePoint.value < 3)
+                    {
+                        uri = top;
                     }
                     else if (int.Parse(contents.player.actionPoint.value) >= 7)
                     {
