@@ -153,6 +153,7 @@ namespace Flying3
                 dynamic json = getJson(gacha);
                 if (json == null)
                 {
+                    setButtonEnd();
                     return;
                 }
                 dynamic contents = json.contents;
@@ -179,6 +180,7 @@ namespace Flying3
                 json = getJson(gachaChoice);
                 if (json == null)
                 {
+                    setButtonEnd();
                     return;
                 }
 
